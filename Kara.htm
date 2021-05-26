@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kara</title>
+    <style>
+        .fix_width {
+            width: 900px;
+        }
+        #first_line {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            width: 900px;
+            height: 50px;
+        }
+        #first_line_color {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            width: 1px;
+            height: 50px;
+            overflow: hidden;
+        }
+        #text
+        {
+            position: absolute;
+            visibility: hidden;
+            height: auto;
+            width: auto;
+            white-space: nowrap; /* Thanks to Herb Caudill comment */
+        }
+        .man {
+            color: #0000FF;
+        }
+        .woman {
+            color: #FF0000;
+        }
+    </style>
+    <script>
+        function init() {
+            var firstLineText = "This div element has position: absolute;";
+            var widths = getTextWidths(firstLineText);
+
+            var textEl = document.getElementById("text");
+            textEl.innerHTML = firstLineText;
+            var maxWidth = (textEl.clientWidth + 10);
+
+            document.querySelector("#first_line").innerHTML = firstLineText;
+            document.querySelector("#first_line_color > div").innerHTML = firstLineText;
+            colorFirstLine(widths, maxWidth);
+        }
+        
+        function getTextWidths(text) {
+            var textEl = document.getElementById("text");
+            var words = text.split(' ');
+            var widths = [];
+            words.forEach(function(txt) {
+                textEl.innerHTML = txt;
+                widths.push(textEl.clientWidth + 5);
+            });
+            return widths;
+        }
+        
+        function colorFirstLine(widths, maxWidth) {
+            var el = document.getElementById('first_line_color');
+            changeWidth(el, 1, maxWidth, 100);
+            //console.log('maxWidth', maxWidth, widths);
+        }
+
+        function changeWidth(el, width, maxWidth, delay) {
+            if (width < maxWidth) {
+                console.log(width);
+                el.style.width = width + "px";
+                setTimeout(function() {
+                    changeWidth(el, width + 10, maxWidth, delay);
+                }, delay);
+            } else {
+                console.log('Done');
+            }
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id="first_line"></div>
+    <div id="first_line_color"><div class="fix_width man"></div></div>
+    <div id="text"></div>
+</body>
+</html>
