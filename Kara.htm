@@ -38,44 +38,44 @@
     </style>
     <script>
         function init() {
-            var firstLineText = "This div element has position: absolute;";
-            var widths = getTextWidths(firstLineText);
-
+            colorFirstLine();
+        }
+        
+        function colorFirstLine() {
+            var text = "This div element has position: absolute;";
             var textEl = document.getElementById("text");
-            textEl.innerHTML = firstLineText;
+            textEl.innerHTML = text;
             var maxWidth = (textEl.clientWidth + 10);
 
-            document.querySelector("#first_line").innerHTML = firstLineText;
-            document.querySelector("#first_line_color > div").innerHTML = firstLineText;
-            colorFirstLine(widths, maxWidth);
-        }
-        
-        function getTextWidths(text) {
-            var textEl = document.getElementById("text");
-            var words = text.split(' ');
-            var widths = [];
-            words.forEach(function(txt) {
-                textEl.innerHTML = txt;
-                widths.push(textEl.clientWidth + 5);
-            });
-            return widths;
-        }
-        
-        function colorFirstLine(widths, maxWidth) {
+            document.querySelector("#first_line").innerHTML = text;
+            document.querySelector("#first_line_color > div").innerHTML = text;
+
             var el = document.getElementById('first_line_color');
-            changeWidth(el, 1, maxWidth, 100);
-            //console.log('maxWidth', maxWidth, widths);
+            changeWidth(el, 0, maxWidth, 0);
         }
 
-        function changeWidth(el, width, maxWidth, delay) {
+        function changeWidth(el, width, maxWidth, index) {
+            var delays = [
+                {maxWidth: 50, delay: 200},
+                {maxWidth: 80, delay: 50}
+            ];
+            var delay;
+            if (delays[index]) {
+                if (width > delays[index].maxWidth && index < delays.length - 1) {
+                    index++;
+                }
+                delay = delays[index].delay;
+            } else {
+                delay = delays[delays.length - 1].delay;  
+            }
             if (width < maxWidth) {
-                console.log(width);
+                console.log(width, delay, index);
                 el.style.width = width + "px";
                 setTimeout(function() {
-                    changeWidth(el, width + 10, maxWidth, delay);
+                    changeWidth(el, width + 10, maxWidth, index);
                 }, delay);
             } else {
-                console.log('Done');
+                alert('Done');
             }
         }
     </script>
