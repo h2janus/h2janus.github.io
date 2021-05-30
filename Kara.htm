@@ -2,87 +2,14 @@
 <html>
 <head>
     <title>Kara</title>
-    <style>
-        .fix_width {
-            width: 900px;
-        }
-        #first_line {
-            position: absolute;
-            top: 80px;
-            left: 20px;
-            width: 900px;
-            height: 50px;
-        }
-        #first_line_color {
-            position: absolute;
-            top: 80px;
-            left: 20px;
-            width: 1px;
-            height: 50px;
-            overflow: hidden;
-        }
-        #text
-        {
-            position: absolute;
-            visibility: hidden;
-            height: auto;
-            width: auto;
-            white-space: nowrap; /* Thanks to Herb Caudill comment */
-        }
-        .man {
-            color: #0000FF;
-        }
-        .woman {
-            color: #FF0000;
-        }
-    </style>
-    <script>
-        function init() {
-            colorFirstLine();
-        }
-        
-        function colorFirstLine() {
-            var text = "This div element has position: absolute;";
-            var textEl = document.getElementById("text");
-            textEl.innerHTML = text;
-            var maxWidth = (textEl.clientWidth + 10);
-
-            document.querySelector("#first_line").innerHTML = text;
-            document.querySelector("#first_line_color > div").innerHTML = text;
-
-            var el = document.getElementById('first_line_color');
-            changeWidth(el, 0, maxWidth, 0);
-        }
-
-        function changeWidth(el, width, maxWidth, index) {
-            var delays = [
-                {maxWidth: 50, delay: 200},
-                {maxWidth: 80, delay: 50}
-            ];
-            var delay;
-            if (delays[index]) {
-                if (width > delays[index].maxWidth && index < delays.length - 1) {
-                    index++;
-                }
-                delay = delays[index].delay;
-            } else {
-                delay = delays[delays.length - 1].delay;  
-            }
-            if (width < maxWidth) {
-                console.log(width, delay, index);
-                el.style.width = width + "px";
-                setTimeout(function() {
-                    changeWidth(el, width + 10, maxWidth, index);
-                }, delay);
-            } else {
-                alert('Done');
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="kara_style.css">
+    <script src="kara_script.js"></script> 
 </head>
 <body onload="init()">
     <div id="first_line"></div>
     <div id="first_line_color"><div class="fix_width man"></div></div>
+    <div id="second_line"></div>
+    <div id="second_line_color"><div class="fix_width man"></div></div>
     <div id="text"></div>
 </body>
 </html>
