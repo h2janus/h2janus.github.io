@@ -1,12 +1,20 @@
+.body {
+    margin: 0px;
+    padding: 0px;
+}
 .fix_width {
     width: 900px;
 }
-.introText {
-    text-shadow: 0 0 1px black, 0 0 1px black, 0 0 1px black, 0 0 1px black;
+.kara_text {
+    color: white;
+    -webkit-text-stroke: 1px black;
+}
+.kara_text_color {
+    -webkit-text-stroke: 1px white;
 }
 .kara_font {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 25px;
+    font-size: 40px;
     font-weight: bold;
 }
 #first_line {
@@ -42,6 +50,7 @@
 #text
 {
     position: absolute;
+    left: 0px;
     visibility: hidden;
     height: auto;
     width: auto;

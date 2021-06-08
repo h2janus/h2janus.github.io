@@ -1,7 +1,19 @@
 var currentIndex = 0;
 
 function init() {
-    startKara();
+    var textEl = document.getElementById("text");
+    textEl.innerHTML = getLyrics()[0].first.text;
+    var maxWidth = (textEl.clientWidth);
+    //console.log(maxWidth);
+    var arr = textEl.innerHTML.split(" ");
+    var ww = 0;
+    for(var i=0; i<arr.length; i++) {
+        textEl.innerHTML = arr[i];
+        ww += textEl.clientWidth + 10;
+        console.log(ww);
+    }
+    //console.log(ww);
+    //startKara();
 }
 
 function getLyrics() {
@@ -9,44 +21,25 @@ function getLyrics() {
         {
             first: {
                 text: "Nằm nghe sóng vỗ từng lớp xa",
-                delays: [
-                    { position: 50, delay: 100 },
-                    { position: 150, delay: 200 },
-                    { position: 210, delay: 200 },
-                    { position: 300, delay: 100 }
-                ]
+                delays: [[0, 95, 10], [96, 201, 10], [202, 315, 10], [316, 373, 100], [374, 473, 100], [474, 700, 200]]
             },
             second: {
-                text: "Bọt tràn theo từng làn gió đưa",
-                delays: [
-                    { position: 50, delay: 100 },
-                    { position: 150, delay: 200 },
-                    { position: 210, delay: 200 },
-                    { position: 300, delay: 100 }
-                ]
+                text: "Bọt tràn theo từng làn gió đưa"
             }
         },
         {
             first: {
-                text: "Một vầng trăng sáng đưa tình yêu chúng ta",
-                delays: [
-                    { position: 50, delay: 100 },
-                    { position: 150, delay: 200 },
-                    { position: 210, delay: 200 },
-                    { position: 300, delay: 100 }
-                ]
+                text: "Một vầng trăng sáng đưa tình yêu chúng ta"
             },
             second: {
-                text: "Vượt ngàn hải lý cũng không xa",
-                delays: [
-                    { position: 50, delay: 100 },
-                    { position: 150, delay: 200 },
-                    { position: 210, delay: 200 },
-                    { position: 300, delay: 100 }
-                ]
+                text: "Vượt ngàn hải lý cũng không xa"
             }
         }
     ];
+}
+
+function onClickText(div, event) {
+    console.log(div.offsetWidth, event.clientX);
 }
 
 function startKara() {
@@ -82,7 +75,7 @@ function colorFirstLine(lyrics) {
     var maxWidth = (textEl.clientWidth + 10);
 
     var el = document.getElementById('first_line_color');
-    changeWidth(el, 0, maxWidth, lyrics, 0);
+    changeWidth(el, 0, maxWidth, lyrics);
 }
 
 function colorSecondLine(lyrics) {
@@ -91,28 +84,16 @@ function colorSecondLine(lyrics) {
     var maxWidth = (textEl.clientWidth + 10);
 
     var el = document.getElementById('second_line_color');
-    changeWidth(el, 0, maxWidth, lyrics, 0);
+    changeWidth(el, 0, maxWidth, lyrics);
 }
 
-function changeWidth(el, width, maxWidth, lyrics, delayIndex) {
-    var delays = getDelays(el, lyrics, currentIndex);
-    if (delays == null) {
-        return;
-    }
-    var delay;
-    if (delays[delayIndex]) {
-        if (width > delays[delayIndex].position && delayIndex < delays.length - 1) {
-            delayIndex++;
-        }
-        delay = delays[delayIndex].delay;
-    } else {
-        delay = delays[delays.length - 1].delay;
-    }
+function changeWidth(el, width, maxWidth, lyrics) {
+    var delay = getDelay(el, lyrics, width);
+    console.log(width, delay);
     if (width < maxWidth) {
-        //console.log(width, delay, delayIndex);
         el.style.width = width + "px";
         setTimeout(function () {
-            changeWidth(el, width + 10, maxWidth, lyrics, delayIndex);
+            changeWidth(el, width + 10, maxWidth, lyrics);
         }, delay);
     } else {
         if (el.id === 'first_line_color') {
@@ -135,21 +116,28 @@ function changeWidth(el, width, maxWidth, lyrics, delayIndex) {
         }
     }
 
-    function getDelays(el, lyrics, index) {
+    function getDelay(el, lyrics, width) {
         var delays = null;
         if (el.id === 'first_line_color') {
-            if (lyrics[index].first) {
-                delays = lyrics[index].first.delays;
-            } else {
-                console.log("End.");//end of song
+            if (lyrics[currentIndex].first) {
+                delays = lyrics[currentIndex].first.delays;
             }
         } else {
-            if (lyrics[index].second) {
-                delays = lyrics[index].second.delays;
-            } else {
-                console.log("End.");//end of song
+            if (lyrics[currentIndex].second) {
+                delays = lyrics[currentIndex].second.delays;
             }
         }
-        return delays;
+        if (!delays) {
+            return 50;
+        }
+        var arr;
+        var length = delays.length;
+        for(var i=0; i<length; i++) {
+            arr = delays[i];
+            if (width >= arr[0] && width <= arr[1]) {
+                break;
+            }
+        }
+        return (arr && arr.length > 2 ? arr[2] : 50);
     }
 }
