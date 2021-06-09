@@ -1,41 +1,8 @@
 var currentIndex = 0;
 
 function init() {
-    var textEl = document.getElementById("text");
-    textEl.innerHTML = getLyrics()[0].first.text;
-    var maxWidth = (textEl.clientWidth);
-    //console.log(maxWidth);
-    var arr = textEl.innerHTML.split(" ");
-    var ww = 0;
-    for(var i=0; i<arr.length; i++) {
-        textEl.innerHTML = arr[i];
-        ww += textEl.clientWidth + 10;
-        console.log(ww);
-    }
-    //console.log(ww);
-    //startKara();
-}
-
-function getLyrics() {
-    return [
-        {
-            first: {
-                text: "Nằm nghe sóng vỗ từng lớp xa",
-                delays: [[0, 95, 10], [96, 201, 10], [202, 315, 10], [316, 373, 100], [374, 473, 100], [474, 700, 200]]
-            },
-            second: {
-                text: "Bọt tràn theo từng làn gió đưa"
-            }
-        },
-        {
-            first: {
-                text: "Một vầng trăng sáng đưa tình yêu chúng ta"
-            },
-            second: {
-                text: "Vượt ngàn hải lý cũng không xa"
-            }
-        }
-    ];
+    //initDelays();
+    startKara();
 }
 
 function onClickText(div, event) {
@@ -140,4 +107,36 @@ function changeWidth(el, width, maxWidth, lyrics) {
         }
         return (arr && arr.length > 2 ? arr[2] : 50);
     }
+}
+
+function initDelays() {
+  var lyrics = getLyrics();
+  lyrics.forEach(function(lr) {
+      lr.first.delays = createDelays(lr.first.text);
+      lr.second.delays = createDelays(lr.second.text);
+  });
+  console.log(lyrics);
+}
+
+function createDelays(text) {
+    var textEl = document.getElementById("text");
+    textEl.innerHTML = text;
+    //var maxWidth = (textEl.clientWidth);
+    //console.log(maxWidth);
+    var arr = textEl.innerHTML.split(" ");
+    var ww = 0;
+    var p = [-1];
+    for(var i=0; i<arr.length; i++) {
+        textEl.innerHTML = arr[i];
+        ww += textEl.clientWidth + 10;
+        p.push(ww);
+    }
+    var length = p.length;
+    p.push(2000);
+    var delays = [];
+    for(var i=0; i<length; i++) {
+        delays.push([p[i] + 1, p[i+1], 100]);
+    }
+    //console.log(delays);
+    return delays;
 }
