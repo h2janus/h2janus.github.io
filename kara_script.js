@@ -3,6 +3,7 @@ var currentIndex = 0;
 function init() {
     //initDelays();
     startKara();
+    //initFileChooser();
 }
 
 function onClickText(div, event) {
@@ -64,22 +65,15 @@ function changeWidth(el, width, maxWidth, lyrics) {
         }, delay);
     } else {
         if (el.id === 'first_line_color') {
-            colorSecondLine(lyrics);
-            if (currentIndex + 1 < lyrics.length) {
-                setTimeout(function () {
-                    displayFirstLine(lyrics, currentIndex + 1);
-                }, 600);
-            }
+            var sleep = getSleep(lyrics, 'first');
+            setTimeout(function() {
+                finishFirstLine(lyrics);
+            }, sleep);
         } else if (el.id === 'second_line_color') {
-            if (currentIndex + 1 < lyrics.length) {
-                currentIndex++;
-                colorFirstLine(lyrics);
-                setTimeout(function () {
-                    displaySecondLine(lyrics, currentIndex);
-                }, 600);
-            } else {
-                console.log('End.');
-            }
+          var sleep = getSleep(lyrics, 'second');
+            setTimeout(function() {
+                finishSecondLine(lyrics);
+            }, sleep);
         }
     }
 
@@ -114,8 +108,9 @@ function initDelays() {
   lyrics.forEach(function(lr) {
       lr.first.delays = createDelays(lr.first.text);
       lr.second.delays = createDelays(lr.second.text);
+      //console.log(JSON.stringify(lr));
   });
-  console.log(lyrics);
+  console.log(JSON.stringify(lyrics));
 }
 
 function createDelays(text) {
@@ -131,12 +126,92 @@ function createDelays(text) {
         ww += textEl.clientWidth + 10;
         p.push(ww);
     }
-    var length = p.length;
-    p.push(2000);
+    var length = p.length - 1;
+    p[length] = 2000;//max width
     var delays = [];
     for(var i=0; i<length; i++) {
-        delays.push([p[i] + 1, p[i+1], 100]);
+        delays.push([p[i] + 1, p[i+1], 50]);
     }
     //console.log(delays);
     return delays;
+}
+
+function finishFirstLine(lyrics) {
+  colorSecondLine(lyrics);
+  if (currentIndex + 1 < lyrics.length) {
+      setTimeout(function () {
+          displayFirstLine(lyrics, currentIndex + 1);
+      }, 600);
+  }
+}
+
+function finishSecondLine(lyrics) {
+  if (currentIndex + 1 < lyrics.length) {
+      currentIndex++;
+      colorFirstLine(lyrics);
+      setTimeout(function () {
+          displaySecondLine(lyrics, currentIndex);
+      }, 600);
+  } else {
+      console.log('End.');
+  }
+}
+
+function getSleep(lyrics, name) {
+  var sleep = 0;
+  if (lyrics[currentIndex]) {
+      var lr = lyrics[currentIndex][name];
+      if (lr && lr.sleep) {
+          sleep = lr.sleep;
+          console.log(name, '-> sleep:', sleep);
+      }
+  }
+  return sleep;
+}
+
+function initFileChooser() {
+    document.getElementById('file').onchange = function() {
+        var file = this.files[0];
+        var reader = new FileReader();
+        reader.onload = function(progressEvent) {
+            //console.log(this.result);// Entire file
+            var lines = this.result.split('\n');// By lines
+            var texts = [];
+            var str;
+            for(var line = 0; line < lines.length; line++){
+                str = lines[line].trim();
+                if (str.length > 0) {
+                  texts.push(str);
+                }
+            }
+            toJson(texts);
+        };
+        reader.readAsText(file);
+    };
+}
+
+function toJson(texts) {
+    var length = texts.length;
+    var lyrics = [];
+    var lr;
+    for(var i=0; i<length-1;) {
+        lr = {
+          first: {text: texts[i]}
+        };
+        lr.first.delays = createDelays(lr.first.text);
+        if (i + 1 < length) {
+          lr.second = {text: texts[i + 1]};
+          lr.second.delays = createDelays(lr.second.text);
+        }
+        lyrics.push(lr);
+        i += 2;
+    }
+    if (i < length) {
+        lr = {
+          first: {text: texts[i]}
+        };
+        lr.first.delays = createDelays(lr.first.text);
+        lyrics.push(lr);
+    }
+    console.log(JSON.stringify(lyrics));
 }

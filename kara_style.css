@@ -35,14 +35,14 @@
 #second_line {
     position: absolute;
     bottom: 30px;
-    left: 120px;
+    left: 450px;
     width: 900px;
     height: 50px;
 }
 #second_line_color {
     position: absolute;
     bottom: 30px;
-    left: 120px;
+    left: 450px;
     width: 1px;
     height: 50px;
     overflow: hidden;
