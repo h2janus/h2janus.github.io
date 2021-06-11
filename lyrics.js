@@ -33,3 +33,22 @@ function getLyrics() {
     }
   ];
 }
+/*
+function startKara() {
+  currentIndex = 1;
+  var lyrics = getLyrics();
+    //displayFirstLine(lyrics, currentIndex);
+    //colorFirstLine(lyrics);
+
+    displaySecondLine(lyrics, currentIndex);
+    colorSecondLine(lyrics);
+}
+
+function finishFirstLine() {
+  //do nothing
+}
+
+function finishSecondLine() {
+  //do nothing
+}
+//*/

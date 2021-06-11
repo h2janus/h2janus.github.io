@@ -1,4 +1,5 @@
 var currentIndex = 0;
+var pause = false;
 
 function init() {
     //initDelays();
@@ -12,8 +13,8 @@ function onClickText(div, event) {
 
 function startKara() {
     var lyrics = getLyrics();
-    displayFirstLine(lyrics, 0);
-    displaySecondLine(lyrics, 0);
+    displayFirstLine(lyrics, currentIndex);
+    displaySecondLine(lyrics, currentIndex);
     setTimeout(function() {
         colorFirstLine(lyrics);
     }, 1000);
@@ -56,6 +57,10 @@ function colorSecondLine(lyrics) {
 }
 
 function changeWidth(el, width, maxWidth, lyrics) {
+    if (pause) {
+        window.karaInfo = {el: el, width: width, maxWidth: maxWidth, lyrics: lyrics};
+        return;
+    }
     var delay = getDelay(el, lyrics, width);
     console.log(width, delay);
     if (width < maxWidth) {
@@ -214,4 +219,22 @@ function toJson(texts) {
         lyrics.push(lr);
     }
     console.log(JSON.stringify(lyrics));
+}
+
+function onPause() {
+    if (pause && window.karaInfo) {
+        pause = false;
+        var info = window.karaInfo;
+        changeWidth(info.el, info.width, info.maxWidth, info.lyrics);
+    } else {
+      pause = true;
+    }
+}
+
+function onRestart() {
+    var el = document.getElementById('currentIndex');
+    var index = parseInt(el.value);
+    currentIndex = index;
+    pause = false;
+    startKara();
 }
